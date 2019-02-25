@@ -21,12 +21,18 @@ def tmux_send_keys(msg):
     return subprocess.call("tmux send-keys -t %s \"%s\"" % (tmux_pane, msg),
             shell=True)
 
+def prep_string(b):
+    if sys.version_info[0] >= 3:
+        return b.decode()
+    else:
+        return b
+
 def send(s):
     # monkeypatch to make send/sendline go to tmux
     global p
     s = p._coerce_send_string(s)
     b = p._encoder.encode(s, final=False)
-    return tmux_send_keys(b)
+    return tmux_send_keys(prep_string(b))
 
 print("Starting to listen for pane %s" % tmux_pane)
 tmux_display_msg("Started in pane %s" % tmux_pane)
