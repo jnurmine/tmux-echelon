@@ -50,6 +50,8 @@ pip install pexpect
 
 You can exit that shell.
 
+You can use either Python 2.7 or Python 3.x.
+
 Remember to:
 
 ```
@@ -63,16 +65,9 @@ Then, to start things up, issue this tmux command (by pressing the attention
 key, and don't forget the colon):
 
 ```
-:pipe-pane "exec ~/bin/echelon-wrapper.sh #D"
+:pipe-pane "exec ~/bin/echelon-wrapper.sh '#{session_id}' #{window_id} #{pane_id}"
 ```
-
-Note: Here the #D refers to the current pane. If you want the output to go to a
-different pane, you need to give the pane-id of that pane. You can check the
-current pane-id with:
-
-```
-:display-message "#D"
-```
+Note: single quotes MUST be used around session_id.
 
 If you did not change the script, try typing "something" and hit enter.
 
@@ -81,6 +76,47 @@ To turn it off:
 ```
 :pipe-pane
 ```
+
+Note: If you want the output to go to a different session, and/or window,
+and/or pane, you need to give the pane-id of that pane. You can check the
+required parameters with:
+
+```
+:display-message "#{session_id} #{window_id} #{pane_id}"
+```
+
+Because of tmux internals, the session id always starts with a dollar sign ($).
+The window id has an "at" (@) and the pane id has a percentage symbol (%).
+
+The used server socket is always the default server called "default". Using a
+different server is currently not supported.
+
+If you don't like numeric ids, you can rename some of them. Please see the tmux
+documentation for details (rename-session, rename-window).
+
+## Tmux key binding
+
+Tip: to be more effective, bind a key in tmux. Use this in ~/.tmux.conf:
+
+```
+bind-key J pipe-pane "exec ~/bin/echelon-wrapper.sh '#{session_id}' #{window_id} #{pane_id}"
+bind-key j pipe-pane
+```
+
+Then attention key + J will turn on tmux-echelon, and attention key + j will disable it.
+
+## Debugging your script
+
+Start the script from command line.
+
+Let's say session_id is $3, window_id is @1 and pane_id is %3:
+
+```
+~/bin/echelon-wrapper.sh '$3' @1 %3
+```
+
+You need to quote the session_id, otherwise the shell interprets it.
+For example, session_id 0 would become $0 and thus the name of your shell (/bin/bash).
 
 ## Customization
 
@@ -97,3 +133,9 @@ If it does not seem to work:
   * Try a newer tmux
   * If you upgrade, kill existing tmuxes (otherwise the old one will be used
     through the default server socket)
+
+If you've changed the script:
+
+  * The shell quoting is nasty and brittle. Try to run directly from command
+    line first. If this works, the problem is likely some quoting issue, such as
+    the dollar sign in the session.
