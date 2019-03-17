@@ -120,8 +120,11 @@ For example, session_id 0 would become $0 and thus the name of your shell (/bin/
 
 ## Customization
 
-See the echelon.py for comments. The (p)expect logic goes inside the while 1
-block.
+See the echelon.py for general plumbing and comments.
+
+Put your script into script.py; the (p)expect logic is in a function called
+"run". The pexpect instance is given as a parameter. Return True if you want to
+continue iteration and False to stop.
 
 You may need to disable the timeout with `p.expect("foobar", timeout=None)`.
 See [pexpect documentation](https://pexpect.readthedocs.io/) for more details.
@@ -134,8 +137,12 @@ If it does not seem to work:
   * If you upgrade, kill existing tmuxes (otherwise the old one will be used
     through the default server socket)
 
-If you've changed the script:
+If you've changed the echelon.py:
 
   * The shell quoting is nasty and brittle. Try to run directly from command
     line first. If this works, the problem is likely some quoting issue, such as
     the dollar sign in the session.
+
+To debug your own script.py:
+
+  * In general, test by running directly from the command line first.

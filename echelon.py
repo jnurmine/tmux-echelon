@@ -66,13 +66,10 @@ p = fdpexpect.fdspawn(sys.stdin)
 # monkeypatch
 p.send = send
 
-while 1:
-    try:
-        # Put your expect script here to react to keywords...
-        p.expect("something")
-        p.sendline("\nHey, you said it\n")
-    except KeyboardInterrupt:
-        break
+# Run the script
+import script
+while script.run(p):
+    pass
 
 p.close()
 print("Bye")
