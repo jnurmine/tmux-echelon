@@ -18,20 +18,25 @@ class TmuxInfo:
     def __str__(self):
         return "%s:%s.%s" % (self.session, self.window, self.pane)
 
+def tmux_safe_quote(msg):
+    # tmux display-message expands e.g.
+    # ".%12" to ".        %12" (string length 12)
+    # Not sure what it is supposed to b e but it messes the display-message output
+    return msg.replace("%", "%%")
+
 def shell_safe_quote(msg):
-    # bash will mess up special chars, prevent this
-    msg = msg.replace("%", "%%")
+    # Avoid shell expansions, use single quotes
     return msg.replace("'", "'\"'\"'")
 
 def tmux_display_msg(msg):
     global tmux_info
     return subprocess.call("tmux display-message -t '%s' '%s'" %
-            (tmux_info, shell_safe_quote(msg)), shell=True)
+            (tmux_info, shell_safe_quote(tmux_safe_quote(msg))), shell=True)
 
 def tmux_send_keys(msg):
     global tmux_info
-    return subprocess.call("tmux send-keys -t '%s' \"%s\"" %
-            (tmux_info, msg), shell=True)
+    return subprocess.call("tmux send-keys -t '%s' '%s'" %
+            (tmux_info, shell_safe_quote(msg)), shell=True)
 
 def prep_string(b):
     if sys.version_info[0] >= 3:
