@@ -105,6 +105,19 @@ bind-key j pipe-pane
 
 Then attention key + J will turn on tmux-echelon, and attention key + j will disable it.
 
+## Logging the session
+
+To keep a record of the whole session, you can enable logging.
+Simply set the environment variable ECHELON_LOG when invoking exec:
+
+```
+bind-key J pipe-pane "exec ECHELON_LOG=/tmp/tmux-echelon-#W.log ~/bin/echelon-wrapper.sh '#{session_id}' #{window_id} #{pane_id}"
+bind-key j pipe-pane
+```
+
+The #W is replaced with the pane name. For example, in the above case, if you
+have a pane called "my-cool-robot", the log file would be "/tmp/tmux-echelon-my-cool-robot.log".
+
 ## Debugging your script
 
 Start the script from command line.
