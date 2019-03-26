@@ -111,7 +111,7 @@ To keep a record of the whole session, you can enable logging.
 Simply set the environment variable ECHELON_LOG when invoking exec:
 
 ```
-bind-key J pipe-pane "exec ECHELON_LOG=/tmp/tmux-echelon-#W.log ~/bin/echelon-wrapper.sh '#{session_id}' #{window_id} #{pane_id}"
+bind-key J pipe-pane "ECHELON_LOG=/tmp/tmux-echelon-#W.log exec ~/bin/echelon-wrapper.sh '#{session_id}' #{window_id} #{pane_id}"
 bind-key j pipe-pane
 ```
 
