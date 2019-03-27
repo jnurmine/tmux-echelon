@@ -66,6 +66,9 @@ p = fdpexpect.fdspawn(sys.stdin)
 # monkeypatch
 p.send = send
 
+# aux monkeypatch, enable feedback from the script
+p.tmux_display_msg = tmux_display_msg
+
 # Run the script
 import script
 while script.run(p):
