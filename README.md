@@ -52,6 +52,14 @@ You can exit that shell.
 
 You can use either Python 2.7 or Python 3.x.
 
+Tip: make symlinks under ~/bin to point to the echelon-wrapper.sh and echelon.py:
+
+```
+cd ~/bin
+ln -s /some/path/tmux-echelon/echelon-wrapper.sh
+ln -s /some/path/tmux-echelon/echelon.py
+```
+
 Remember to:
 
 ```
